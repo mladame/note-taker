@@ -13,12 +13,22 @@
 // THEN I am presented with empty fields to enter a new note title and the note’s text in the right-hand column
 
 //TODO require packages to be used: express,path,fs 
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
 //TODO require db.json - ised to store and retrieve notes using fs module
+const db = require("./db/db.json");
 
 //TODO define: port, express app
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 //TODO express middlware??
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 //TODO link assets
+app.use(express.static('public'));
 
 //* get routes
 // app.get("/", function (req,res){})
@@ -44,3 +54,6 @@
 // ---------------------------------------------------------------------------
 
 // app.listen Port
+app.listen(PORT, () =>
+  console.log(`App listening at http://localhost:${PORT} 🚀`)
+);

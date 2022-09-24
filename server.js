@@ -103,9 +103,20 @@ app.post("/api/notes", async (req, res) => {
 
 app.delete("/api/notes/:id", async (req, res) => {
     // get query param (id) for desired note
-
+    let id = req.params.id;
     // read all notes from db.json; remove note with matching id
-
+    fs.readFile ("./db/db.json", (err, data) => {
+        if(err){
+            res.json(err)
+        }else{
+            // remove note from db through splice at index to target id
+            let savedNotes = JSON.parse(data);
+            if (id === savedNotes[i].id) {
+                // delete 1 item at index = i
+                savedNotes.splice(i, 1)
+            }
+        } 
+    })
     // rewrite notes to db.json
 
 })

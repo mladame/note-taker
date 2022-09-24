@@ -18,6 +18,7 @@ const path = require("path");
 const fs = require("fs");
 //require db.json - used to store and retrieve notes using fs module
 const db = require("./db/db.json");
+const {v4 : uuidv4} = require('uuid')
 
 // require routes to post notes
 const routes = require('./routes');
@@ -68,9 +69,11 @@ app.post("/api/notes", async (req, res) => {
         } else {
             // parse data from db, add new note to savedNotes
             const savedNotes = JSON.parse(data);
+            const uniqueId = uuidv4();
             let newNote = {
                 title: req.body.title,
                 text: req.body.text,
+                id: uniqueId,
             };
             savedNotes.push(newNote);
 
@@ -98,7 +101,7 @@ app.post("/api/notes", async (req, res) => {
 //          and then rewrite the notes to the db.json file
 // ---------------------------------------------------------------------------
 
-app.delete("/api/notes/:id", (req, res) => {
+app.delete("/api/notes/:id", async (req, res) => {
     // get query param (id) for desired note
 
     // read all notes from db.json; remove note with matching id

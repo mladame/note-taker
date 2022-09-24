@@ -12,33 +12,31 @@
 // WHEN I click on the Write icon in the navigation at the top of the page
 // THEN I am presented with empty fields to enter a new note title and the note’s text in the right-hand column
 
-//TODO require packages to be used: express,path,fs 
+//require packages to be used: express, path, fs 
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-//TODO require db.json - ised to store and retrieve notes using fs module
+//require db.json - used to store and retrieve notes using fs module
 const db = require("./db/db.json");
 
-//TODO define: port, express app
+//define: port, express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-//TODO express middlware??
+//express middlware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//TODO link assets
+//link assets
 app.use(express.static('public'));
 
-//* get routes
-// app.get("/", function (req,res){})
-// HTML ROUTES
-//TODO GET /notes should return the notes.html file
-app.get("/notes", function (req,res){
+//GET /notes should return the notes.html file
+app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, 'notes.html'));
 });
-//TODO GET * should return the index.html file
-app.get("/", function (req,res){
+
+//GET * should return the index.html file
+app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
@@ -53,14 +51,20 @@ app.get("/api/notes", (req, res) => res.json(db));
 //TODO      need to find a way to give each note a unique id when it's saved 
 //TODO            (look into npm packages that could do this for you)
 
-app.post("/api/notes", (req, res) => {
+app.route("/api/notes")
     // get new note to save on body
+    .get(function (req, res) {
+        res.json(db);
+    })
 
     // add to db.json
+    .post(function (req, res) {
 
-    // return new note
+    })
 
-})
+// return new note
+
+
 
 // BONUS----------------------------------------------------------------------
 // DELETE /api/notes/:id should receive a query parameter that contains the id 
@@ -75,10 +79,10 @@ app.delete("/api/notes/:id", (req, res) => {
     // read all notes from db.json; remove note with matching id
 
     // rewrite notes to db.json
-    
+
 })
 
 // app.listen Port
 app.listen(PORT, () =>
-  console.log(`App listening at http://localhost:${PORT} 🚀`)
+    console.log(`App listening at http://localhost:${PORT} 🚀`)
 );

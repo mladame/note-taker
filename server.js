@@ -18,7 +18,7 @@ const path = require("path");
 const fs = require("fs");
 //require db.json - used to store and retrieve notes using fs module
 const db = require("./db/db.json");
-const {v4 : uuidv4} = require('uuid')
+const { v4: uuidv4 } = require('uuid')
 
 // require routes to post notes
 const routes = require('./routes');
@@ -49,22 +49,22 @@ app.get("/", async (req, res) => {
 app.get("/api/notes", async (req, res) => {
     // res.json(db);
     fs.readFile("./db/db.json", "utf8", (err, data) => {
-        if(err){
+        if (err) {
             res.json(err);
-        }else{
+        } else {
             const savedNotes = JSON.parse(data);
             // const list = req.params.savedNotes;
             res.json(savedNotes)
         }
     })
-} );
+});
 
 // Create new note
 app.post("/api/notes", async (req, res) => {
-    
+
     // read db.json, respond with error or data if successful
     fs.readFile("./db/db.json", (err, data) => {
-        if(err){
+        if (err) {
             res.json(err);
         } else {
             // parse data from db, add new note to savedNotes
@@ -79,19 +79,17 @@ app.post("/api/notes", async (req, res) => {
 
             // Write updated notes to db.json
             fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
-                if(err){
+                if (err) {
                     res.json(err)
-                }else{
-                    console.log("Message created.");
-                } 
+                } else {
+                    console.log("Note created.");
+                }
             })
             res.json(newNote);
         }
-        
+
     });
 
-
-    
 })
 
 // BONUS----------------------------------------------------------------------
@@ -102,22 +100,35 @@ app.post("/api/notes", async (req, res) => {
 // ---------------------------------------------------------------------------
 
 app.delete("/api/notes/:id", async (req, res) => {
-    // get query param (id) for desired note
-    let id = req.params.id;
+
     // read all notes from db.json; remove note with matching id
-    fs.readFile ("./db/db.json", (err, data) => {
-        if(err){
+    fs.readFile("./db/db.json", (err, data) => {
+        if (err) {
             res.json(err)
-        }else{
+        } else {
             // remove note from db through splice at index to target id
             let savedNotes = JSON.parse(data);
-            if (id === savedNotes[i].id) {
-                // delete 1 item at index = i
-                savedNotes.splice(i, 1)
+            for (let i = 0; i < savedNotes.length; i++) {
+                if (req.params.id == savedNotes[i].id) {
+                    savedNotes.splice(i, 1);
+                    // rewrite notes to db.json
+                    fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
+                        if (err) {
+                            res.json(err)
+                        } else {
+                            console.log("Note deleted.");
+                        }
+
+                    res.json(savedNotes);
+                    })
+                    
+                    break;
+                }
             }
-        } 
+
+        }
     })
-    // rewrite notes to db.json
+
 
 })
 

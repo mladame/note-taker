@@ -19,6 +19,9 @@ const fs = require("fs");
 //require db.json - used to store and retrieve notes using fs module
 const db = require("./db/db.json");
 
+// require routes to post notes
+const routes = require('./routes');
+
 //define: port, express app
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -41,7 +44,7 @@ app.get("/", function (req, res) {
 });
 
 // API ROUTES
-//TODO GET /api/notes should read the db.json file and return all saved notes as JSON
+//GET /api/notes should read the db.json file and return all saved notes as JSON
 app.get("/api/notes", (req, res) => res.json(db));
 
 //TODO post routes
@@ -51,16 +54,17 @@ app.get("/api/notes", (req, res) => res.json(db));
 //TODO      need to find a way to give each note a unique id when it's saved 
 //TODO            (look into npm packages that could do this for you)
 
-app.route("/api/notes")
-    // get new note to save on body
-    .get(function (req, res) {
-        res.json(db);
-    })
+// app.use(routes);
+// app.route("/api/notes")
+//     // get new note to save on body
+//     .get(function (req, res) {
+//         res.json(db);
+//     })
 
-    // add to db.json
-    .post(function (req, res) {
+//     // add to db.json
+//     .post(function (req, res) {
 
-    })
+//     })
 
 // return new note
 

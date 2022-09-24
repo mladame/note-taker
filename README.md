@@ -37,5 +37,10 @@ Email: mladame43@gmail.com
 
 [Visit my Github Profile](https://github.com/mladame)
 
+---
+
 ## Demo
 
+[Note Taker Homepage](https://dry-ocean-42123.herokuapp.com/)
+
+![Note Taker Demo Gif]()

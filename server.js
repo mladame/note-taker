@@ -34,69 +34,62 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 //GET /notes should return the notes.html file
-app.get("/notes", function (req, res) {
+app.get("/notes", async (req, res) => {
     res.sendFile(path.join(__dirname, '/public/notes.html'));
 });
 
 //GET * should return the index.html file
-app.get("/", function (req, res) {
+app.get("/", async (req, res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
-// API ROUTES ------------------------------
+// API ROUTES ------------------------------------------------------------------------------
 //GET /api/notes should read the db.json file and return all saved notes as JSON
-app.get("/api/notes", (req, res) => res.json(db));
+app.get("/api/notes", async (req, res) => {
+    // res.json(db);
+    fs.readFile("./db/db.json", "utf8", (err, data) => {
+        if(err){
+            res.json(err);
+        }else{
+            const savedNotes = JSON.parse(data);
+            // const list = req.params.savedNotes;
+            res.json(savedNotes)
+        }
+    })
+} );
 
-//TODO post routes
-// app.post
-//TODO POST /api/notes should receive a new note to save on the request body, add it 
-//TODO    to the db.json file, and then return the new note to the client. You'll 
-//TODO      need to find a way to give each note a unique id when it's saved 
-//TODO            (look into npm packages that could do this for you)
-
-app.post("/api/notes", (req, res) => {
+// Create new note
+app.post("/api/notes", async (req, res) => {
     
     // read db.json, respond with error or data if successful
     fs.readFile("./db/db.json", (err, data) => {
         if(err){
             res.json(err);
         } else {
-            // parse data from db, add new note to db
-            var savedNotes = JSON.parse(data);
+            // parse data from db, add new note to savedNotes
+            const savedNotes = JSON.parse(data);
             let newNote = {
                 title: req.body.title,
                 text: req.body.text,
             };
             savedNotes.push(newNote);
 
-            // post updated notes
+            // Write updated notes to db.json
             fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
                 if(err){
                     res.json(err)
                 }else{
-                    res.json(db);
+                    console.log("Message created.");
                 } 
             })
+            res.json(newNote);
         }
-    })
+        
+    });
 
 
     
 })
-
-// app.use(routes);
-// app.route("/api/notes")
-//     // get new note to save on body
-//     res.json({requestBody: req.body})
-
-//     // add to db.json
-//     .post(function (req, res) {
-
-//     })
-
-// return new note
-
-
 
 // BONUS----------------------------------------------------------------------
 // DELETE /api/notes/:id should receive a query parameter that contains the id 

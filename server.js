@@ -12,29 +12,84 @@
 // WHEN I click on the Write icon in the navigation at the top of the page
 // THEN I am presented with empty fields to enter a new note title and the note’s text in the right-hand column
 
-//TODO require packages to be used: express,path,fs 
-//TODO require db.json - ised to store and retrieve notes using fs module
+//require packages to be used: express, path, fs 
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
+//require db.json - used to store and retrieve notes using fs module
+const db = require("./db/db.json");
 
-//TODO define: port, express app
+// require routes to post notes
+const routes = require('./routes');
 
-//TODO express middlware??
-//TODO link assets
+//define: port, express app
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-//* get routes
-// app.get("/", function (req,res){})
-// HTML ROUTES
-//TODO GET /notes should return the notes.html file
-//TODO GET * should return the index.html file
+//express middlware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// API ROUTES
-//TODO GET /api/notes should read the db.json file and return all saved notes as JSON
+//link assets
+app.use(express.static('public'));
 
-//TODO post routes
-// app.post
-//TODO POST /api/notes should receive a new note to save on the request body, add it 
-//TODO    to the db.json file, and then return the new note to the client. You'll 
-//TODO      need to find a way to give each note a unique id when it's saved 
-//TODO            (look into npm packages that could do this for you)
+//GET /notes should return the notes.html file
+app.get("/notes", async (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/notes.html'));
+});
+
+//GET * should return the index.html file
+app.get("/", async (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/index.html'));
+});
+
+// API ROUTES ------------------------------------------------------------------------------
+//GET /api/notes should read the db.json file and return all saved notes as JSON
+app.get("/api/notes", async (req, res) => {
+    // res.json(db);
+    fs.readFile("./db/db.json", "utf8", (err, data) => {
+        if(err){
+            res.json(err);
+        }else{
+            const savedNotes = JSON.parse(data);
+            // const list = req.params.savedNotes;
+            res.json(savedNotes)
+        }
+    })
+} );
+
+// Create new note
+app.post("/api/notes", async (req, res) => {
+    
+    // read db.json, respond with error or data if successful
+    fs.readFile("./db/db.json", (err, data) => {
+        if(err){
+            res.json(err);
+        } else {
+            // parse data from db, add new note to savedNotes
+            const savedNotes = JSON.parse(data);
+            let newNote = {
+                title: req.body.title,
+                text: req.body.text,
+            };
+            savedNotes.push(newNote);
+
+            // Write updated notes to db.json
+            fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
+                if(err){
+                    res.json(err)
+                }else{
+                    console.log("Message created.");
+                } 
+            })
+            res.json(newNote);
+        }
+        
+    });
+
+
+    
+})
 
 // BONUS----------------------------------------------------------------------
 // DELETE /api/notes/:id should receive a query parameter that contains the id 
@@ -43,4 +98,16 @@
 //          and then rewrite the notes to the db.json file
 // ---------------------------------------------------------------------------
 
+app.delete("/api/notes/:id", (req, res) => {
+    // get query param (id) for desired note
+
+    // read all notes from db.json; remove note with matching id
+
+    // rewrite notes to db.json
+
+})
+
 // app.listen Port
+app.listen(PORT, () =>
+    console.log(`App listening at http://localhost:${PORT} 🚀`)
+);

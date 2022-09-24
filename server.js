@@ -43,7 +43,7 @@ app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// API ROUTES
+// API ROUTES ------------------------------
 //GET /api/notes should read the db.json file and return all saved notes as JSON
 app.get("/api/notes", (req, res) => res.json(db));
 
@@ -54,12 +54,29 @@ app.get("/api/notes", (req, res) => res.json(db));
 //TODO      need to find a way to give each note a unique id when it's saved 
 //TODO            (look into npm packages that could do this for you)
 
+app.post("/api/notes", (req, res) => {
+
+    fs.readFile(db, "utf8", (err, data) => {
+        if(err){
+            res.json(err);
+        } else {
+            // 
+            const newNote = req.body; 
+            const savedNotes = JSON.parse(data);
+            savedNotes.push(newNote);
+
+            fs.writeFile(db, JSON.stringify(savedNotes, null, "\t"))
+        }
+    })
+
+
+    
+})
+
 // app.use(routes);
 // app.route("/api/notes")
 //     // get new note to save on body
-//     .get(function (req, res) {
-//         res.json(db);
-//     })
+//     res.json({requestBody: req.body})
 
 //     // add to db.json
 //     .post(function (req, res) {

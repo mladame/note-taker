@@ -35,12 +35,12 @@ app.use(express.static('public'));
 
 //GET /notes should return the notes.html file
 app.get("/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, 'notes.html'));
+    res.sendFile(path.join(__dirname, '/public/notes.html'));
 });
 
 //GET * should return the index.html file
 app.get("/", function (req, res) {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
 // API ROUTES ------------------------------
@@ -55,17 +55,28 @@ app.get("/api/notes", (req, res) => res.json(db));
 //TODO            (look into npm packages that could do this for you)
 
 app.post("/api/notes", (req, res) => {
-
-    fs.readFile(db, "utf8", (err, data) => {
+    
+    // read db.json, respond with error or data if successful
+    fs.readFile("./db/db.json", (err, data) => {
         if(err){
             res.json(err);
         } else {
-            // 
-            const newNote = req.body; 
-            const savedNotes = JSON.parse(data);
+            // parse data from db, add new note to db
+            var savedNotes = JSON.parse(data);
+            let newNote = {
+                title: req.body.title,
+                text: req.body.text,
+            };
             savedNotes.push(newNote);
 
-            fs.writeFile(db, JSON.stringify(savedNotes, null, "\t"))
+            // post updated notes
+            fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
+                if(err){
+                    res.json(err)
+                }else{
+                    res.json(db);
+                } 
+            })
         }
     })
 

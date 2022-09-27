@@ -80,59 +80,57 @@ app.post("/api/notes", async (req, res) => {
 //          and then rewrite the notes to the db.json file
 // ---------------------------------------------------------------------------
 
-// app.delete("/api/notes/:id", async (req, res) => {
-
-//     // read all notes from db.json; remove note with matching id
-//     fs.readFile("./db/db.json", (err, data) => {
-//         if (err) {
-//             res.json(err)
-//         } else {
-//             // remove note from db through splice at index to target id
-//             let savedNotes = JSON.parse(data);
-//             for (let i = 0; i < savedNotes.length; i++) {
-//                 if (req.params.id == savedNotes[i].id) {
-//                     savedNotes.splice(i, 1);
-                    
-//                     // rewrite notes to db.json
-//                     fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
-//                         if (err) {
-//                             res.json(err)
-//                         } else {
-//                             console.log("Note deleted.");
-//                         }
-
-//                     res.json(savedNotes);
-//                     })
-                    
-//                     break;
-//                 }
-//             }
-
-//         }
-//     })
-
-    
-
-// });
-
 app.delete("/api/notes/:id", async (req, res) => {
-    let savedNotes = JSON.parse(fs.readFile("./db/db.json", "utf8"));
-    for (let i = 0; i < savedNotes.length; i++) {
-        if (req.params.id == savedNotes[i].id) {
-            savedNotes.splice(i, 1);
-            break;
-    }}
 
-    fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
+    // read all notes from db.json; remove note with matching id
+    fs.readFile("./db/db.json", (err, data) => {
         if (err) {
             res.json(err)
         } else {
-            console.log("Note deleted.");
+            console.log("deleting note...");
         }
+        // remove note from db through splice at index to target id
+        let savedNotes = JSON.parse(data);
+        for (let i = 0; i < savedNotes.length; i++) {
+            if (req.params.id == savedNotes[i].id) {
+                savedNotes.splice(i, 1);
+                break;
+            }
+        }
+        // rewrite notes to db.json
+        fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
+            if (err) {
+                res.json(err)
+            } else {
+                console.log("Note deleted.");
+            }
 
-    res.json(savedNotes);
+            res.json(savedNotes);
+        })
     })
+
+
+
 });
+
+// app.delete("/api/notes/:id", async (req, res) => {
+//     let savedNotes = JSON.parse(fs.readFile("./db/db.json", "utf8"));
+//     let deleteId = (req.params.id).toString();
+
+//     savedNotes = savedNotes.filter(selected =>{
+//         return selected.id != noteId;
+//     })
+
+//     fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
+//         if (err) {
+//             res.json(err)
+//         } else {
+//             console.log("Note deleted.");
+//         }
+
+//     res.json(savedNotes);
+//     })
+// });
 
 // app.delete('/api/notes/:id', async (req,res,next)=>{
 //     const savedNotes = getIndexById(req.params.id,expressions);

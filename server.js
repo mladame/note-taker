@@ -2,7 +2,8 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('uuid');
+const db = require("./db/db.json");
 
 //define: port, express app
 const app = express();
@@ -79,37 +80,70 @@ app.post("/api/notes", async (req, res) => {
 //          and then rewrite the notes to the db.json file
 // ---------------------------------------------------------------------------
 
-app.delete("/api/notes/:id", async (req, res) => {
+// app.delete("/api/notes/:id", async (req, res) => {
 
-    // read all notes from db.json; remove note with matching id
-    fs.readFile("./db/db.json", (err, data) => {
+//     // read all notes from db.json; remove note with matching id
+//     fs.readFile("./db/db.json", (err, data) => {
+//         if (err) {
+//             res.json(err)
+//         } else {
+//             // remove note from db through splice at index to target id
+//             let savedNotes = JSON.parse(data);
+//             for (let i = 0; i < savedNotes.length; i++) {
+//                 if (req.params.id == savedNotes[i].id) {
+//                     savedNotes.splice(i, 1);
+                    
+//                     // rewrite notes to db.json
+//                     fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
+//                         if (err) {
+//                             res.json(err)
+//                         } else {
+//                             console.log("Note deleted.");
+//                         }
+
+//                     res.json(savedNotes);
+//                     })
+                    
+//                     break;
+//                 }
+//             }
+
+//         }
+//     })
+
+    
+
+// });
+
+app.delete("/api/notes/:id", async (req, res) => {
+    let savedNotes = JSON.parse(fs.readFile("./db/db.json", "utf8"));
+    for (let i = 0; i < savedNotes.length; i++) {
+        if (req.params.id == savedNotes[i].id) {
+            savedNotes.splice(i, 1);
+            break;
+    }}
+
+    fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
         if (err) {
             res.json(err)
         } else {
-            // remove note from db through splice at index to target id
-            let savedNotes = JSON.parse(data);
-            for (let i = 0; i < savedNotes.length; i++) {
-                if (req.params.id == savedNotes[i].id) {
-                    savedNotes.splice(i, 1);
-                    // rewrite notes to db.json
-                    fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
-                        if (err) {
-                            res.json(err)
-                        } else {
-                            console.log("Note deleted.");
-                        }
-
-                    res.json(savedNotes);
-                    })
-                    
-                    break;
-                }
-            }
-
+            console.log("Note deleted.");
         }
-    })
 
+    res.json(savedNotes);
+    })
 });
+
+// app.delete('/api/notes/:id', async (req,res,next)=>{
+//     const savedNotes = getIndexById(req.params.id,expressions);
+//     if(eleIndex!==-1){
+//         expressions.splice(eleIndex,1);
+//         res.status(204).send(expressions[eleIndex]);
+//     }
+//     else{
+//         res.status(404).send();
+//     }
+// })
 
 // app.listen Port
 app.listen(PORT, () =>

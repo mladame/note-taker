@@ -3,5 +3,10 @@
 		"title": "Wash the dishes",
 		"text": "Load dishwasher",
 		"id": "cfd185a7-6873-4d68-af9f-3dc40c980f3b"
+	},
+	{
+		"title": "make bed",
+		"text": "throw used sheets in washer",
+		"id": "74c14679-c977-4487-ae5f-8acbf313d886"
 	}
 ]

@@ -8,7 +8,6 @@
   - [Installation](#installation)
   - [Usage](#usage)
   - [Licenses](#licenses)
-  - [Contributions](#contributions)
   - [Tests](#tests)
   - [Questions](#questions)
 
@@ -43,4 +42,4 @@ Email: mladame43@gmail.com
 
 [Note Taker Homepage](https://dry-ocean-42123.herokuapp.com/)
 
-![Note Taker Demo Gif]()
+![Note Taker Demo Gif](./assets/note%20taker%20demo.gif)

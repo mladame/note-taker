@@ -113,35 +113,6 @@ app.delete("/api/notes/:id", async (req, res) => {
 
 });
 
-// app.delete("/api/notes/:id", async (req, res) => {
-//     let savedNotes = JSON.parse(fs.readFile("./db/db.json", "utf8"));
-//     let deleteId = (req.params.id).toString();
-
-//     savedNotes = savedNotes.filter(selected =>{
-//         return selected.id != noteId;
-//     })
-
-//     fs.writeFile("./db/db.json", JSON.stringify(savedNotes, null, "\t"), (err) => {
-//         if (err) {
-//             res.json(err)
-//         } else {
-//             console.log("Note deleted.");
-//         }
-
-//     res.json(savedNotes);
-//     })
-// });
-
-// app.delete('/api/notes/:id', async (req,res,next)=>{
-//     const savedNotes = getIndexById(req.params.id,expressions);
-//     if(eleIndex!==-1){
-//         expressions.splice(eleIndex,1);
-//         res.status(204).send(expressions[eleIndex]);
-//     }
-//     else{
-//         res.status(404).send();
-//     }
-// })
 
 // app.listen Port
 app.listen(PORT, () =>
